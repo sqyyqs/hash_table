@@ -64,6 +64,7 @@ void hash_table_resize(struct Hash_table *hash_table) {
     unsigned int new_capacity = 2 * (hash_table->table_length);
     if (new_capacity != 0) {
         hash_table->table_length = new_capacity;
+        //используем не realloc, потому что надо пересчитать хеши
         struct Node **new_table = (struct Node **) malloc(sizeof(struct Node *) * new_capacity);
         for (unsigned int i = 0; i < new_capacity; i++) {
             new_table[i] = NULL;
@@ -92,7 +93,7 @@ struct Node *get_node(struct Hash_table *hash_table, const char *key) {
         return NULL;
     }
     unsigned int node_index = (hash_table->table_length - 1) & hash(key);
-    printf("(delete)index = %u\n", node_index);
+//    printf("(delete)index = %u\n", node_index); //отладка
     struct Node *current = hash_table->table[node_index];
     while (current != NULL) {
         if (strcmp(current->key, key) == 0) {
@@ -135,7 +136,7 @@ void insert(struct Hash_table *hash_table, char *key, void *value) {
     new_node->value = value;
     new_node->next = NULL;
     struct Node* node = hash_table->table[index];
-    printf("index for %s is %u(hash = %lu)\n", key, index, hash(key));
+//    printf("index for %s is %u(hash = %lu)\n", key, index, hash(key)); отладка
     if (node == NULL) {
         hash_table->table[index] = new_node;
         hash_table->size++;
